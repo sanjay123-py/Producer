@@ -78,4 +78,4 @@ jobs:
           export BOOTSTRAP_SERVER="${{ secrets.BOOTSTRAP_SERVER }}" SCHEMA_REGISTRY_API_KEY="${{ secrets.SCHEMA_REGISTRY_API_KEY }}"
           export SCHEMA_REGISTRY_API_SECRET="${{ secrets.SCHEMA_REGISTRY_API_SECRET }}" SECURITY_PROTOCOL="${{ secrets.SECURITY_PROTOCOL }}"
           export SSL_MECHANISM="${{ secrets.SSL_MECHANISM }}"
-          docker compose up
+          docker compose up -d
