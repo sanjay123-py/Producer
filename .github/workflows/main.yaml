@@ -42,7 +42,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   Continuous-Deployment:
     needs: build-push-image-to-ecr
@@ -69,15 +69,13 @@ jobs:
 
       - name: Pull docker image
         run: |
+          docker rmi producer-producer -f docker rm producer_container
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
       - name: Run docker image to serve users
         run: |
-          export IMAGE_NAME="${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}":latest AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" AWS_DEFAULT_REGION="${{ secrets.AWS_REGION }}"
+          export IMAGE_NAME="${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}":latest AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" AWS_REGION="${{ secrets.AWS_REGION }}"
           export API_KEY="${{ secrets.API_KEY }}" API_SECRET_KEY="${{ secrets.API_SECRET_KEY }}" ENDPOINT_SCHEMA_URL="${{ secrets.ENDPOINT_SCHEMA_URL }}"
-          export BOOTSTRAP_SERVER="${{ secrets. BOOTSTRAP_SERVER }}" SCHEMA_REGISTRY_API_KEY="${{ secrets.SCHEMA_REGISTRY_API_KEY }}"
+          export BOOTSTRAP_SERVER="${{ secrets.BOOTSTRAP_SERVER }}" SCHEMA_REGISTRY_API_KEY="${{ secrets.SCHEMA_REGISTRY_API_KEY }}"
           export SCHEMA_REGISTRY_API_SECRET="${{ secrets.SCHEMA_REGISTRY_API_SECRET }}" SECURITY_PROTOCOL="${{ secrets.SECURITY_PROTOCOL }}"
           export SSL_MECHANISM="${{ secrets.SSL_MECHANISM }}"
           docker compose up
-      - name: Docker prune to remove old images
-        run: |
-          docker system prune -f

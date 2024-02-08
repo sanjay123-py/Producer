@@ -1,7 +1,7 @@
 version: '1'
 services:
   producer:
-    build: .
+    image: ${IMAGE_NAME}
     container_name: producer_container
     environment:
       - API_KEY=${API_KEY}
