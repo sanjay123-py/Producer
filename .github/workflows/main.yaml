@@ -69,7 +69,7 @@ jobs:
 
       - name: Pull docker image
         run: |
-          docker rmi producer-producer -f docker rm producer_container
+          docker rmi ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest -f docker rm producer_container
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
       - name: Run docker image to serve users
         run: |
